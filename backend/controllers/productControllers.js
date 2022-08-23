@@ -1,12 +1,25 @@
+const asyncHandler = require("express-async-handler")
+
 /*
-    @desc   Get Products
+    @desc   Get Single Product
+    @route  GET /api/products/:id
+    @access Private
+*/
+
+const getProduct = asyncHandler(async (req, res) => {
+    res.status(200).json({message: 'Get Products'})
+})
+
+
+/*
+    @desc   Get All Products
     @route  GET /api/products
     @access Private
 */
 
-const getProducts = (req, res) => {
+const getProducts = asyncHandler(async (req, res) => {
     res.status(200).json({message: 'Get Products'})
-}
+})
 
 
 /*
@@ -15,9 +28,14 @@ const getProducts = (req, res) => {
     @access Private
 */
 
-const setProduct = (req, res) => {
+const setProduct = asyncHandler(async (req, res) => {
+    console.log('req', req.body)
+    if(!req.body.desc){
+      res.status(401)
+      throw new Error("Please add a text field")
+    }
     res.status(200).json({message: 'Set Products'})
-}
+})
 
 /*
     @desc   Update Product
@@ -25,9 +43,9 @@ const setProduct = (req, res) => {
     @access Private
 */
 
-const updateProduct = (req, res) => {
+const updateProduct = asyncHandler( async (req, res) => {
     res.status(200).json({message: `Update ${req.params.id}` })
-}
+})
 
 
 /*
@@ -36,8 +54,8 @@ const updateProduct = (req, res) => {
     @access Private
 */
 
-const deleteProduct = (req, res) => {
+const deleteProduct = asyncHandler(async (req, res) => {
     res.status(200).json({message: `Delete ${req.params.id}`})
-}
+})
 
-module.exports = { getProducts, setProduct, updateProduct, deleteProduct }
+module.exports = {getProduct, getProducts, setProduct, updateProduct, deleteProduct }
