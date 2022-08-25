@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler")
+const Product = require('../model/productsModel')
 
 /*
     @desc   Get Single Product
@@ -7,7 +8,13 @@ const asyncHandler = require("express-async-handler")
 */
 
 const getProduct = asyncHandler(async (req, res) => {
-    res.status(200).json({message: 'Get Products'})
+    const product = await Product.findById(req.params.id)
+    
+    if(!product){
+        res.status(400)
+        throw new Error("Product not found")
+    }
+    res.status(200).json(product)
 })
 
 
@@ -18,7 +25,8 @@ const getProduct = asyncHandler(async (req, res) => {
 */
 
 const getProducts = asyncHandler(async (req, res) => {
-    res.status(200).json({message: 'Get Products'})
+    const products = await Product.find()
+    res.status(200).json(products)
 })
 
 
@@ -29,12 +37,20 @@ const getProducts = asyncHandler(async (req, res) => {
 */
 
 const setProduct = asyncHandler(async (req, res) => {
-    console.log('req', req.body)
-    if(!req.body.desc){
+    if(!req.body){
       res.status(401)
-      throw new Error("Please add a text field")
+      throw new Error("Please enter values. Request body cannot be empty!")
     }
-    res.status(200).json({message: 'Set Products'})
+
+    const createdProduct = await Product.create({
+        name: req.body.name,
+        type: req.body.type,
+        price: req.body.price,
+        cover: req.body.cover,
+        longDesc: req.body.longDesc,
+        shortDesc: req.body.shortDesc
+    })
+    res.status(200).json(createdProduct)
 })
 
 /*
@@ -44,7 +60,17 @@ const setProduct = asyncHandler(async (req, res) => {
 */
 
 const updateProduct = asyncHandler( async (req, res) => {
-    res.status(200).json({message: `Update ${req.params.id}` })
+    const product = await Product.findById(req.params.id);
+
+    if(!product){
+        res.status(400)
+        throw new Error(`Product with ID${req.params.id} not found`)
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, {
+        new:true
+    })
+    res.status(200).json(updatedProduct)
 })
 
 
@@ -55,7 +81,15 @@ const updateProduct = asyncHandler( async (req, res) => {
 */
 
 const deleteProduct = asyncHandler(async (req, res) => {
-    res.status(200).json({message: `Delete ${req.params.id}`})
+    const product = await Product.findById(req.params.id)
+
+    if(!product){
+        res.status(400)
+        throw new Error(`Product with ID${req.params.id} not found`)
+    }
+
+    await product.remove()
+    res.status(200).json({id: req.params.id, status: "Deleted successfully"})
 })
 
 module.exports = {getProduct, getProducts, setProduct, updateProduct, deleteProduct }
