@@ -1,5 +1,9 @@
 const asyncHandler = require("express-async-handler")
 const Product = require('../model/productsModel')
+const mongoose= require('mongoose')
+const redisClient = require("../config/redisClient")
+
+const DEFAULT_EXPIRATION = 3600
 
 /*
     @desc   Get Single Product
@@ -14,6 +18,7 @@ const getProduct = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error("Product not found")
     }
+    
     res.status(200).json(product)
 })
 
@@ -23,11 +28,6 @@ const getProduct = asyncHandler(async (req, res) => {
     @route  GET /api/products
     @access Private
 */
-
-const getProducts = asyncHandler(async (req, res) => {
-    const products = await Product.find()
-    res.status(200).json(products)
-})
 
 
 /*
@@ -92,4 +92,4 @@ const deleteProduct = asyncHandler(async (req, res) => {
     res.status(200).json({id: req.params.id, status: "Deleted successfully"})
 })
 
-module.exports = {getProduct, getProducts, setProduct, updateProduct, deleteProduct }
+module.exports = {getProduct,  setProduct, updateProduct, deleteProduct }
