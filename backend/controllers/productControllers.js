@@ -3,7 +3,7 @@ const Product = require('../model/productsModel')
 const mongoose= require('mongoose')
 const redisClient = require("../config/redisClient")
 
-const DEFAULT_EXPIRATION = 3600
+const DEFAULT_EXPIRATION = 10000
 
 /*
     @desc   Get Single Product
@@ -13,13 +13,13 @@ const DEFAULT_EXPIRATION = 3600
 
 const getProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
-    
     if(!product){
         res.status(400)
         throw new Error("Product not found")
+    }else{
+        redisClient.set('products', JSON.stringify(products), "ex", DEFAULT_EXPIRATION);
+        return res.status(200).json(product)
     }
-    
-    res.status(200).json(product)
 })
 
 
@@ -28,6 +28,17 @@ const getProduct = asyncHandler(async (req, res) => {
     @route  GET /api/products
     @access Private
 */
+
+const getProducts = asyncHandler(async (req, res) => {
+    const products = await Product.find()
+    if(!products){
+        res.status(400)
+        throw new Error("Product not found")
+    }else{
+        redisClient.set('products', JSON.stringify(products), "ex", DEFAULT_EXPIRATION);
+        return res.status(200).json(products)
+    }
+})
 
 
 /*
@@ -92,4 +103,4 @@ const deleteProduct = asyncHandler(async (req, res) => {
     res.status(200).json({id: req.params.id, status: "Deleted successfully"})
 })
 
-module.exports = {getProduct,  setProduct, updateProduct, deleteProduct }
+module.exports = {getProduct, getProducts, setProduct, updateProduct, deleteProduct }
