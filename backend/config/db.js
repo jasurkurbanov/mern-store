@@ -11,3 +11,10 @@ const dbConnection = async () =>{
 }
 
 module.exports = dbConnection
+
+/*
+
+crud fix 
+deploy backend and fronted on internet
+
+*/

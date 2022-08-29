@@ -21,7 +21,7 @@ const getSearchedProducts = asyncHandler(async(req, res)=>{
             return res.json({message: "Data not found"});
         }
     }else{
-        return res.json({message: "Query cannot be empty"});
+        return res.json([{message: "Query cannot be empty"}]);
     }
 })
 

@@ -1,0 +1,24 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  
+  input {
+    outline: none;
+    border: none;
+    font-family: inherit;
+    font-size: 20px;
+    width: 90%;
+    color: var(--tertiary);
+  }
+  
+  button {
+    border: 0;
+    outline: 0;
+  }
+  

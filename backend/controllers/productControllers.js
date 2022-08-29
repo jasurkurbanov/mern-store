@@ -17,7 +17,6 @@ const getProduct = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error("Product not found")
     }else{
-        redisClient.set('products', JSON.stringify(products), "ex", DEFAULT_EXPIRATION);
         return res.status(200).json(product)
     }
 })
@@ -72,7 +71,6 @@ const setProduct = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler( async (req, res) => {
     const product = await Product.findById(req.params.id);
-
     if(!product){
         res.status(400)
         throw new Error(`Product with ID${req.params.id} not found`)
@@ -91,8 +89,11 @@ const updateProduct = asyncHandler( async (req, res) => {
     @access Private
 */
 
-const deleteProduct = asyncHandler(async (req, res) => {
+const deleteProduct = async (req, res) => {
+    // console.log(req.params.id)
     const product = await Product.findById(req.params.id)
+
+    console.log('product', product)
 
     if(!product){
         res.status(400)
@@ -100,7 +101,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
     }
 
     await product.remove()
-    res.status(200).json({id: req.params.id, status: "Deleted successfully"})
-})
+    return res.status(200).json({id: req.params.id, status: "Deleted successfully"})
+}
 
 module.exports = {getProduct, getProducts, setProduct, updateProduct, deleteProduct }
